@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Booking Details{% endblock %}
+
+{% block style %}
+<style>
+    .grid-center{display:grid; place-items:center; padding:24px;}
+    .ticket-card{width:100%; max-width:800px; text-align:center;}
+    .ticket-header { border-bottom: 2px dashed var(--card-brd); padding-bottom: 20px; margin-bottom: 20px;}
+    .ticket-body { text-align: left; }
+    .ticket-body h3 { text-align: left; border-bottom: 1px solid var(--card-brd); padding-bottom: 8px; margin-bottom: 16px;}
+    .passenger-list { list-style: none; padding: 0; }
+    .passenger-item { display: grid; grid-template-columns: 1fr 2fr 1fr 1fr; gap: 16px; background: rgba(255,255,255,0.08); padding: 12px; border-radius: 12px; margin-bottom: 10px; align-items: center;}
+    .passenger-item.header { background:none; font-weight:bold; }
+    .actions{margin-top:30px; display:flex; justify-content:center; gap:16px;}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="grid-center">
+    <div class="card ticket-card">
+        <div class="ticket-header">
+            <h1>Virtual Ticket</h1>
+            <p><strong>Booking Status:</strong> <span class="pill">{{ booking.status }}</span></p>
+        </div>
+
+        <div class="ticket-body">
+            <h3>Bus & Route Details</h3>
+            <p><strong>Bus:</strong> {{ booking.bus.name }}</p>
+            <p><strong>Route:</strong> {{ booking.bus.source }} → {{ booking.bus.destination }}</p>
+            <p><strong>Departure:</strong> {{ booking.bus.departure_time|date:"M d, Y, H:i" }}</p>
+            <p><strong>Contact Number:</strong> {{ booking.phone_number }}</p>
+            
+            <h3 style="margin-top: 24px;">Passenger Details ({{ booking.num_passengers }} Total)</h3>
+            <div class="passenger-list">
+                <div class="passenger-item header">
+                    <div>Ticket ID</div>
+                    <div>Name</div>
+                    <div>Age</div>
+                    <div>Gender</div>
+                </div>
+                {% for passenger in passengers %}
+                <div class="passenger-item">
+                    <div>TICKET-{{ booking.id }}-{{ passenger.id }}</div>
+                    <div>{{ passenger.name }}</div>
+                    <div>{{ passenger.age }}</div>
+                    <div>{{ passenger.gender }}</div>
+                </div>
+                {% empty %}
+                <p>No passenger details found for this booking.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="actions">
+            <a href="{% url 'index' %}" class="btn">Back to Dashboard</a>
+            <!-- NEW Download Button -->
+            <a href="{% url 'download_ticket' booking.id %}" class="btn">Download Ticket</a>
+            {% if booking.status == 'Booked' %}
+            <a class="btn cancel" href="{% url 'cancel_booking' booking.id %}">Cancel Booking</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

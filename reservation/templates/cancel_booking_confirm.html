@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Confirm Cancellation{% endblock %}
+
+{% block body_class %}grid-center{% endblock %}
+
+{% block style %}
+<style>
+    .grid-center{display:grid; place-items:center; padding:24px;}
+    .confirm-card{width:100%; max-width:500px; text-align:center;}
+    .actions{margin-top:20px; display:flex; justify-content:center; gap:16px;}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="card confirm-card">
+    <h1>Are you sure?</h1>
+    <p>Do you really want to cancel your booking for {{ booking.bus.name }}?</p>
+    <div class="actions">
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn">Yes, Cancel</button>
+        </form>
+        <a href="{% url 'booking_detail' booking.id %}" class="btn">No, Go Back</a>
+    </div>
+</div>
+{% endblock %}

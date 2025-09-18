@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{% block title %}Bus Reservation{% endblock %}</title>
+<link rel="preconnect" href="https://rsms.me/">
+<link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+
+<style>
+  :root {
+    --g1:#026a47; --g2:#a389a1; --g3:#3c2a0b; --g4:#ec4899;
+    --card-bg:rgba(255,255,255,.12); --card-brd:rgba(255,255,255,.25);
+    --white:#fff; --radius:22px; --shadow:0 12px 35px rgba(0,0,0,.45);
+    --table-brd:rgba(255,255,255,.2);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%; margin:0;}
+  body{
+    font-family:'Inter', system-ui, sans-serif;
+    color:var(--white);
+    background: linear-gradient(120deg,var(--g1),var(--g2),var(--g3),var(--g4));
+    background-size:400% 400%; animation:gradientMove 14s ease infinite;
+    background-attachment:fixed;
+  }
+  @keyframes gradientMove{ 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+  @keyframes fadeInUp{ from{opacity:0; transform:translateY(30px)} to{opacity:1; transform:translateY(0)} }
+
+  .btn{
+    display:inline-block; cursor:pointer; text-decoration:none;
+    border:none; border-radius:14px; padding:12px 18px;
+    font-weight:700; font-size:15px; color:#fff;
+    background:linear-gradient(90deg,var(--g1),var(--g2),var(--g3),var(--g4));
+    background-size:300% 100%;
+    transition:background-position .5s ease, transform .08s ease;
+  }
+  .btn:hover{background-position:100% 0}
+  .btn:active{transform:scale(.98)}
+  
+  .card{
+    backdrop-filter:blur(20px) saturate(160%); -webkit-backdrop-filter:blur(20px) saturate(160%);
+    background:var(--card-bg); border:1px solid var(--card-brd);
+    border-radius:var(--radius); box-shadow:var(--shadow);
+    padding:30px; animation:fadeInUp 1s ease-in-out;
+  }
+  h1,h2,h3{margin:0 0 18px; font-weight:700; text-align:center;}
+  h1{font-size:28px;} h2{font-size:24px;}
+  p{line-height:1.6; margin:0 0 16px;}
+  a{color:var(--white); text-decoration:underline;}
+  .text-center{text-align:center;}
+
+  @media (max-width: 959px) {
+    .wrap {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    .nav .links {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+    .card, .grid-center {
+        padding: 15px;
+    }
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    /* --- Responsive List/Card styles --- */
+    .list-header {
+        display: none; /* Hide headers on mobile */
+    }
+    .list-item {
+        display: block; /* Stack items vertically */
+        padding: 15px;
+    }
+    .list-item > div {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .list-item > div:last-child {
+        border-bottom: none;
+        justify-content: center; /* Center buttons */
+        padding-top: 15px;
+    }
+    .list-item > div::before {
+        content: attr(data-label); /* Show label before data */
+        font-weight: bold;
+        opacity: 0.8;
+    }
+    .list-item > div[data-label="Seats"] .pill,
+    .list-item > div[data-label="Pax"] .pill,
+    .list-item > div[data-label="Status"] .pill {
+        margin-left: auto; /* Push pills to the right */
+    }
+}
+
+</style>
+{% block style %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+  {% block content %}{% endblock %}
+</body>
+</html>

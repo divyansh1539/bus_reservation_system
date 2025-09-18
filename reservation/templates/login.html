@@ -1,105 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Login • Bus Reservation</title>
+{% extends "base.html" %}
+
+{% block title %}Login • Bus Reservation{% endblock %}
+
+{% block body_class %}grid-center{% endblock %}
+
+{% block style %}
 <style>
-  :root {
-    --g1:#026a47; --g2:#a389a1; --g3:#3c2a0b; --g4:#ec4899;
-    --card-bg:rgba(255,255,255,.12); --card-brd:rgba(255,255,255,.25);
-    --white:#fff; --radius:22px; --shadow:0 12px 35px rgba(0,0,0,.45);
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%;margin:0}
-  body{
-    font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;
-    color:var(--white); display:grid; place-items:center; padding:24px;
-    background: linear-gradient(120deg,var(--g1),var(--g2),var(--g3),var(--g4));
-    background-size:400% 400%; animation:gradientMove 14s ease infinite;
-  }
-  @keyframes gradientMove{
-    0%{background-position:0% 50%}
-    50%{background-position:100% 50%}
-    100%{background-position:0% 50%}
-  }
-
-  /* Card animation */
-  .card{
-    width:100%; max-width:500px; backdrop-filter:blur(20px) saturate(160%);
-    background:var(--card-bg); border:1px solid var(--card-brd);
-    border-radius:var(--radius); box-shadow:var(--shadow);
-    padding:30px; 
-    animation:fadeInUp 1s ease-in-out;
-  }
-  @keyframes fadeInUp{
-    from{opacity:0;transform:translateY(30px)}
-    to{opacity:1;transform:translateY(0)}
-  }
-
-  h1{
-    margin:0 0 18px;font-size:28px;font-weight:700;text-align:center;
-    opacity:0; transform:translateY(20px);
-    animation:fadeInUp 0.8s ease forwards;
-    animation-delay:0.2s;
-  }
-
-  form{display:grid;gap:14px}
-
-  label{font-size:14px}
-
+  .grid-center{display:grid; place-items:center; padding:24px;}
+  .form-card{width:100%; max-width:500px;}
+  form{display:grid; gap:14px;}
+  form p{margin:0;}
+  form label{font-size:14px; display:block; margin-bottom:6px;}
   input{
     width:100%; padding:12px 14px; border-radius:14px; font-size:15px;
     border:1px solid rgba(255,255,255,.35); background:rgba(255,255,255,.15);
     color:#fff; outline:none; transition:.25s;
-    opacity:0; transform:translateY(20px);
-    animation:fadeInUp 0.8s ease forwards;
   }
-  /* inputs delay */
-  #username{animation-delay:0.4s}
-  #password{animation-delay:0.6s}
-
-  input:focus{border-color:#fff;background:rgba(255,255,255,.25)}
-
-  .btn{
-    cursor:pointer;border:none;border-radius:14px;padding:13px 18px;
-    font-weight:700;font-size:15px;color:#fff;
-    background:linear-gradient(90deg,var(--g1),var(--g2),var(--g3),var(--g4));
-    background-size:300% 100%; transition:background-position .5s ease, transform .08s ease;
-    opacity:0; transform:translateY(20px);
-    animation:fadeInUp 0.8s ease forwards;
-    animation-delay:0.8s;
-  }
-  .btn:hover{background-position:100% 0}
-  .btn:active{transform:scale(.98)}
-
-  .bottom{
-    text-align:center;margin-top:12px;font-size:14px;
-    opacity:0; transform:translateY(20px);
-    animation:fadeInUp 0.8s ease forwards;
-    animation-delay:1s;
-  }
-  .bottom a{color:#fff;text-decoration:underline}
+  input:focus{border-color:#fff; background:rgba(255,255,255,.25);}
+  .bottom{text-align:center; margin-top:16px; font-size:14px;}
 </style>
-</head>
-<body>
-  <div class="card">
-    <h1>Login</h1>
-    <form method="POST">
-      {% csrf_token %}
-      <div>
-        <label for="username">Username</label>
-        <input id="username" name="username" placeholder="Enter username" required />
-      </div>
-      <div>
-        <label for="password">Password</label>
-        <input id="password" type="password" name="password" placeholder="Enter password" required />
-      </div>
-      <button class="btn" type="submit">Sign In</button>
-    </form>
-    <div class="bottom">
-      New here? <a href="{% url 'register' %}">Create Account</a>
-    </div>
+{% endblock %}
+
+{% block content %}
+<div class="card form-card">
+  <h1>Login</h1>
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn" type="submit">Login</button>
+  </form>
+  <div class="bottom">
+    Don't have an account? <a href="{% url 'register' %}">Register</a>
   </div>
-</body>
-</html>
+</div>
+{% endblock %}

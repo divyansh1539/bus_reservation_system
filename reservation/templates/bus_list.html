@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Available Buses{% endblock %}
+
+{% block style %}
+<style>
+    .grid-center{display:grid; place-items:center; padding:24px;}
+    .list-card{width:100%; max-width:800px;}
+    h1{text-align:center; margin-bottom:24px;}
+    table{width:100%; border-collapse:separate; border-spacing:0 10px; margin-top:-10px;}
+    th,td{text-align:left; padding:12px 16px; vertical-align:middle;}
+    th{font-size:14px; opacity:.9;}
+    tbody tr{background:rgba(255,255,255,.08); border:1px solid var(--table-brd);}
+    tbody tr:hover{background:rgba(255,255,255,.12);}
+    tr td:first-child, tr th:first-child{border-top-left-radius:14px; border-bottom-left-radius:14px;}
+    tr td:last-child, tr th:last-child{border-top-right-radius:14px; border-bottom-right-radius:14px;}
+    .pill{display:inline-block; padding:7px 12px; border-radius:999px; font-size:13px; font-weight:600; background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.25);}
+    .actions{margin-top:24px; text-align:center;}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="grid-center">
+    <div class="card list-card">
+        <h1>Select a Bus to Book</h1>
+        <table>
+            <thead>
+                <tr><th>Bus</th><th>Route</th><th>Departure</th><th>Seats</th><th></th></tr>
+            </thead>
+            <tbody>
+            {% for bus in buses %}
+                <tr>
+                    <td>{{ bus.name }}</td>
+                    <td>{{ bus.source }} → {{ bus.destination }}</td>
+                    <td>{{ bus.departure_time|date:"M d, Y H:i" }}</td>
+                    <td><span class="pill">{{ bus.available_seats }}</span></td>
+                    <!-- This button takes the user to payment -->
+                    <td><a class="btn" href="{% url 'book_bus' bus.id %}">Book</a></td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="5" style="text-align:center; padding: 20px;">Sorry, no buses were found for this route.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="actions">
+             <!-- Link to go back to the search page -->
+            <a href="{% url 'book_ticket' %}" class="btn">Search Again</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

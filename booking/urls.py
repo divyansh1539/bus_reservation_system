@@ -14,17 +14,27 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+# main_app/urls.py
+
+# booking/urls.py
+
+# booking/urls.py
+
 from django.contrib import admin
-from django.urls import path
-from reservation import views
+from django.urls import path, include
+from reservation import urls
 
 urlpatterns = [
+    # 1. Admin Site URL
+    # This path is for the built-in Django administration site.
     path('admin/', admin.site.urls),
-    path('', views.index, name="index"),
-    path('login/', views.user_login, name="login"),
-    path('logout/', views.user_logout, name="logout"),
-    path('register/', views.register, name="register"),
-    path('book/', views.book_ticket, name="book_ticket"),
-    path('cancel/<int:booking_id>/', views.cancel_ticket, name="cancel_ticket"),
+
+    # 2. Reservation App URLs
+    # This is the crucial line. It tells Django that for any URL,
+    # it should look for the 'urls.py' file inside your 'reservation' app.
+    path('', include('reservation.urls')),
 ]
+
+
+
 
