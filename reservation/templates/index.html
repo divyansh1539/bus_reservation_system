@@ -1,141 +1,120 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Dashboard • Bus Reservation</title>
+{% extends "base.html" %}
+{% block title %}Dashboard • Bus Reservation{% endblock %}
+
+{% block style %}
 <style>
-  :root{
-    --g1:#06b6d4; --g2:#3b82f6; --g3:#9333ea;
-    --card-bg:rgba(255,255,255,.12); --card-brd:rgba(255,255,255,.32); --white:#fff;
-    --shadow:0 12px 34px rgba(2,6,23,.5); --radius:22px;
-    --table-brd:rgba(255,255,255,.25);
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--white);
-    background:
-      radial-gradient(1200px 900px at 80% 20%,rgba(255,255,255,.08),transparent),
-      linear-gradient(135deg,var(--g1),var(--g2) 50%,var(--g3));
-    background-attachment:fixed;
-    display:flex; flex-direction:column; min-height:100vh;
-  }
-  .nav{
-    display:flex; justify-content:space-between; align-items:center; gap:16px;
-    padding:18px 24px;
-  }
-  .brand{display:flex; align-items:center; gap:10px}
-  .logo{width:36px;height:36px;border-radius:12px;background:conic-gradient(from 180deg,#06b6d4,#3b82f6,#9333ea,#06b6d4)}
-  .nav a{color:#fff; text-decoration:none; font-weight:600; padding:10px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.28); background:rgba(255,255,255,.12)}
-  .wrap{flex:1; display:grid; gap:22px; grid-template-columns:1fr; padding:0 24px 28px}
-  @media(min-width:960px){ .wrap{grid-template-columns:1.15fr .85fr}}
-  .card{
-    backdrop-filter:blur(14px) saturate(140%); background:var(--card-bg);
-    border:1px solid var(--card-brd); border-radius:var(--radius); box-shadow:var(--shadow);
-    padding:20px;
-  }
-  h2{margin:0 0 14px}
-  table{width:100%; border-collapse:separate; border-spacing:0 10px}
-  th,td{text-align:left; padding:12px 14px}
-  th{font-size:14px; opacity:.95}
-  tr{
-    border:1px solid var(--table-brd); background:rgba(255,255,255,.12);
-  }
-  tr:first-child td, tr:first-child th{border-top-left-radius:12px;border-top-right-radius:12px}
-  tr td:first-child, tr th:first-child{border-top-left-radius:12px; border-bottom-left-radius:12px}
-  tr td:last-child, tr th:last-child{border-top-right-radius:12px; border-bottom-right-radius:12px}
-  .btn{
-    display:inline-block; color:#fff; text-decoration:none; font-weight:700;
-    padding:8px 12px; border-radius:12px; border:none; cursor:pointer;
-    background:linear-gradient(90deg,#06b6d4,#3b82f6,#9333ea); background-size:200% 100%;
-    transition:background-position .4s ease, transform .08s ease;
-  }
-  .btn:hover{background-position:100% 0}
-  .btn:active{transform:translateY(1px)}
-  .pill{
-    display:inline-block; padding:6px 10px; border-radius:999px; font-size:12px;
-    background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.35)
-  }
-  .muted{opacity:.9}
-  .footer{padding:16px 24px; text-align:center; opacity:.85}
+    /* --- All your existing styles remain unchanged --- */
+    body{display:flex; flex-direction:column; min-height:100vh;}
+    .nav{display:flex; justify-content:space-between; align-items:center; gap:16px; padding:18px 24px;}
+    .brand{display:flex; align-items:center; gap:12px;}
+    .logo{width:38px; height:38px; border-radius:12px; background:conic-gradient(from 180deg, var(--g1), var(--g2), var(--g3), var(--g4), var(--g1));}
+    .nav .links a, .nav .links span{cursor: pointer; color:#fff; text-decoration:none; font-weight:600; padding:10px 14px; border-radius:14px;}
+    .nav .links a { border:1px solid rgba(255,255,255,.25); background:rgba(255,255,255,.12); transition:all .25s;}
+    .nav .links a:hover{background:rgba(255,255,255,.18); border-color:rgba(255,255,255,.35);}
+    .wrap{flex:1; display:grid; gap:24px; grid-template-columns:1fr; padding:0 24px 28px;}
+    @media(min-width:960px){.wrap{grid-template-columns:1.2fr .8fr;}}
+    .footer{padding:20px 24px; text-align:center; opacity:.85;}
+    .text-center{text-align:center;}
+
+    /* Bus List Styles */
+    .bus-list-header, .bus-item { display: grid; grid-template-columns: 1fr 1fr 1fr 0.5fr 0.5fr; gap: 16px; align-items: center; padding: 12px 16px; }
+    .bus-list-header { font-size: 14px; opacity: .9; font-weight: 600; }
+    .bus-item { background: rgba(255,255,255,.08); border: 1px solid var(--table-brd); border-radius: 14px; margin-bottom: 10px; }
+    .bus-item:hover { background: rgba(255,255,255,.12); }
+    .pill { display: inline-block; padding: 7px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.25); text-align: center; }
+
+    /* Bookings Table Styles */
+    .bookings-table table{width:100%; border-collapse:separate; border-spacing:0 10px; margin-top:-10px;}
+    .bookings-table th, .bookings-table td{text-align:left; padding:12px 16px; vertical-align:middle;}
+    .bookings-table th{font-size:14px; opacity:.9;}
+    .bookings-table tbody tr{background:rgba(255,255,255,.08); border:1px solid var(--table-brd); border-radius:14px;}
+    .bookings-table .btn.cancel { background: #dc3545; }
+
+
+
+    .btn.cancel { background-color: #dc3545; }
+    .btn.cancel:hover { background-color: #b02a37; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transform: scale(1.05); }
+
 </style>
-</head>
-<body>
-  <div class="nav">
+{% endblock %}
+
+{% block content %}
+<div class="nav">
     <div class="brand">
-      <div class="logo"></div>
-      <div>
-        <div style="font-weight:800">Bus Reservation</div>
-        <div class="muted" style="font-size:13px">Hello, {{ request.user.username }}</div>
-      </div>
+        <div class="logo"></div>
+        <div>
+            <div style="font-weight:800; font-size:17px;">Bus Reservation</div>
+            <div style="opacity:.85; font-size:14px;">Hello, {{ request.user.username }}</div>
+        </div>
     </div>
-    <div>
-      <a href="{% url 'book_ticket' %}" class="btn" style="border:none">+ Book Ticket</a>
-      <a href="{% url 'logout' %}">Logout</a>
+    <div class="links" style="display: flex; align-items: center;">
+        <span style="margin-right: 16px;">Credits: ₹{{ request.user.credits|floatformat:2 }}</span>
+        <a href="{% url 'book_ticket' %}" class="btn" style="margin-right: 8px;">+ Book a Ticket</a>
+        <a href="{% url 'logout' %}">Logout</a>
     </div>
-  </div>
+</div>
 
-  <div class="wrap">
+<div class="wrap">
+    <!-- Left Column: Available Buses -->
     <section class="card">
-      <h2>Available Buses</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Bus</th>
-            <th>Route</th>
-            <th>Departure</th>
-            <th>Seats</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-        {% for bus in buses %}
-          <tr>
-            <td>{{ bus.name }}</td>
-            <td>{{ bus.source }} → {{ bus.destination }}</td>
-            <td>{{ bus.departure_time|date:"M d, Y H:i" }}</td>
-            <td><span class="pill">{{ bus.seats }}</span></td>
-            <td><a class="btn" href="{% url 'book_ticket' %}">Book</a></td>
-          </tr>
-        {% empty %}
-          <tr><td colspan="5">No buses available.</td></tr>
-        {% endfor %}
-        </tbody>
-      </table>
+        <h2>Available Buses</h2>
+        <div class="bus-list">
+            <div class="bus-list-header">
+                <div>Bus</div>
+                <div>Route</div>
+                <div>Departure</div>
+                <div>Seats</div>
+                <div></div>
+            </div>
+            {% for bus in buses %}
+            <div class="bus-item">
+                <div>{{ bus.name }}</div>
+                <div>{{ bus.source }} → {{ bus.destination }}</div>
+                <div>{{ bus.departure_time|date:"M d, Y H:i" }}</div>
+                <div><span class="pill">{{ bus.available_seats }}</span></div>
+                <div><a class="btn" href="{% url 'book_bus' bus.id %}">Book</a></div>
+            </div>
+            {% empty %}
+            <p class="text-center">No buses available at the moment.</p>
+            {% endfor %}
+        </div>
     </section>
 
-    <section class="card">
-      <h2>Your Bookings</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Bus</th>
-            <th>Status</th>
-            <th>Booked On</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-        {% for b in bookings %}
-          <tr>
-            <td>{{ b.bus.name }}</td>
-            <td><span class="pill">{{ b.status }}</span></td>
-            <td>{{ b.booking_time|date:"M d, Y H:i" }}</td>
-            <td>
-              {% if b.status == "Booked" %}
-                <a class="btn" href="{% url 'cancel_ticket' b.id %}">Cancel</a>
-              {% endif %}
-            </td>
-          </tr>
-        {% empty %}
-          <tr><td colspan="4">No bookings yet.</td></tr>
-        {% endfor %}
-        </tbody>
-      </table>
+    <!-- Right Column: Your Bookings (UPDATED) -->
+    <section class="card bookings-table">
+        <h2>Your Bookings</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Bus</th>
+                    <th>Route</th>
+                    <th>Passengers</th>
+                    <th>Status</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td>{{ booking.bus.name }}</td>
+                    <td>{{ booking.bus.source }} → {{ booking.bus.destination }}</td>
+                    <td><span class="pill">{{ booking.num_passengers }}</span></td>
+                    <td><span class="pill">{{ booking.status }}</span></td>
+                    <td><a class="btn" href="{% url 'booking_detail' booking.id %}">View</a></td>
+                    <td>
+                        {% if booking.status == 'Booked' %}
+                        <a class="btn cancel" href="{% url 'cancel_booking' booking.id %}">Cancel</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="text-center">You have no bookings yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </section>
-  </div>
+</div>
 
-  <div class="footer">©️ {{ now|date:"Y" }} Bus Reservation</div>
-</body>
-</html>
+<div class="footer">© {% now "Y" %} Bus Reservation</div>
+{% endblock %}

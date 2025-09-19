@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Confirm Payment{% endblock %}
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 40px auto; text-align: center;">
+    <h2>Confirm Your Payment</h2>
+    <p>You are booking {{ booking.num_passengers }} ticket(s) for <strong>{{ booking.bus.name }}</strong>.</p>
+    <h3>Total Cost: ₹{{ booking.total_cost }}</h3>
+    
+    <!-- Real-world payment options would be integrated here -->
+    <div style="margin: 30px 0;">
+        <h4>Select Payment Method:</h4>
+        <button class="btn">UPI</button>
+        <button class="btn">Credit/Debit Card</button>
+        <button class="btn">Net Banking</button>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn" style="background-color: #28a745;">Pay Now (Simulated)</button>
+    </form>
+</div>
+{% endblock %}

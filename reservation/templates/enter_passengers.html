@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Enter Passenger Details{% endblock %}
+
+{% block style %}
+<style>
+    .grid-center{display:grid; place-items:center; padding:24px;}
+    .form-card{width:100%; max-width:700px;}
+    form{display:grid; gap:20px;}
+    .passenger-formset{display:grid; gap:16px; margin-top: 20px;}
+    .passenger-form{margin-bottom:10px; padding: 16px; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; background: rgba(0,0,0,0.1);}
+    form input, form select{width:100%; padding:12px 14px; border-radius:14px; font-size:15px; border:1px solid rgba(255,255,255,.35); background:rgba(255,255,255,.15); color:#fff; outline:none;}
+    form select { color: #fff; }
+    form select option { background: var(--g3); color: #fff; }
+    .actions{margin-top:20px; text-align: center;}
+    .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; align-items: center; }
+    label { font-size: 14px; display: block; margin-bottom: 6px; }
+    #empty-form { display: none; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="grid-center">
+    <div class="card form-card">
+        <h1>Book Ticket for {{ bus.name }}</h1>
+        <p style="text-align: center; opacity: .8; margin-bottom: 20px;">
+            Enter contact details and passenger information.
+        </p>
+
+        <form method="POST">
+            {% csrf_token %}
+            
+            <!-- Phone Number Field -->
+            <div>
+                <label for="{{ details_form.phone_number.id_for_label }}">Contact Phone Number:</label>
+                {{ details_form.phone_number }}
+            </div>
+
+            <!-- Number of Passengers -->
+            <div>
+                <label for="num_passengers_input">Number of Passengers:</label>
+                <input type="number" id="num_passengers_input" value="1" min="1" max="{{ bus.available_seats }}" style="width: 100px;">
+                <small style="opacity: 0.8; margin-left: 10px;">(Max: {{ bus.available_seats }} seats available)</small>
+            </div>
+            
+            <!-- Passenger Forms Management -->
+            {{ passenger_formset.management_form }}
+            <div class="passenger-formset" id="passenger-form-list">
+                <!-- Forms will be dynamically added here -->
+            </div>
+
+            <div class="actions">
+                <button type="submit" class="btn">Confirm & Pay</button>
+            </div>
+        </form>
+
+        <!-- Hidden template form for JavaScript -->
+        <div id="empty-form">
+            <div class="passenger-form">
+                <h4>Passenger __prefix_num__</h4>
+                <div class="form-row">
+                    <div><label for="id_form-__prefix__-name">Name:</label>{{ passenger_formset.empty_form.name }}</div>
+                    <div><label for="id_form-__prefix__-age">Age:</label>{{ passenger_formset.empty_form.age }}</div>
+                    <div><label for="id_form-__prefix__-gender">Gender:</label>{{ passenger_formset.empty_form.gender }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const numPassengersInput = document.getElementById('num_passengers_input');
+    const formsetContainer = document.getElementById('passenger-form-list');
+    const emptyFormTemplate = document.getElementById('empty-form').innerHTML;
+    const totalFormsInput = document.querySelector('input[name="form-TOTAL_FORMS"]');
+
+    function updateForms() {
+        let count = parseInt(numPassengersInput.value, 10) || 0;
+        const maxSeats = parseInt(numPassengersInput.max, 10);
+        if (count < 1) count = 1;
+        if (count > maxSeats) count = maxSeats;
+        numPassengersInput.value = count;
+        totalFormsInput.value = count;
+        formsetContainer.innerHTML = ''; 
+        for (let i = 0; i < count; i++) {
+            let newFormHtml = emptyFormTemplate.replace(/__prefix__/g, i).replace(/__prefix_num__/g, i + 1);
+            formsetContainer.innerHTML += newFormHtml;
+        }
+    }
+    numPassengersInput.addEventListener('input', updateForms);
+    updateForms();
+});
+</script>
+{% endblock %}
