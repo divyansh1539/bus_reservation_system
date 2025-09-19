@@ -22,4 +22,3 @@ class Booking(models.Model):
         return f"{self.user.username} - {self.bus.name}"
 
 
-# Create your models here.
