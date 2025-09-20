@@ -6,6 +6,12 @@ from datetime import timedelta
 from django.utils import timezone
 from django.http import FileResponse
 from django.core.mail import EmailMessage
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
@@ -19,14 +25,9 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 
 from .models import Bus, Booking, Passenger
-from .forms import (
-    CustomUserCreationForm,
-    BusSearchForm,
-    BookingDetailsForm,
-    PassengerForm
-)
+from .forms import CustomUserCreationForm, BusSearchForm, PassengerFormSet, BookingDetailsForm
 
-# PDF ticket generator (theme unchanged)
+
 def generate_ticket_pdf(booking, passengers):
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter, topMargin=40)
@@ -69,32 +70,62 @@ def generate_ticket_pdf(booking, passengers):
     buffer.seek(0)
     return buffer
 
-# --- Email Notification for Booking ---
-def send_booking_confirmation_email(booking):
-    passengers = booking.passengers.all()
-    pdf_buffer = generate_ticket_pdf(booking, passengers)
-    subject = f"Your Ticket is Confirmed! Booking ID: {booking.ticket_id}"
-    body = (f"Dear {booking.user.username},\n\nYour booking is confirmed. Ticket and details are attached.\n\nThanks.")
-    email = EmailMessage(subject, body, 'your_email@example.com', [booking.user.email])
-    email.attach(f'Ticket-{booking.ticket_id}.pdf', pdf_buffer.getvalue(), 'application/pdf')
-    try:
-        email.send(fail_silently=False)
-    except Exception as e:
-        print(f"Failed to send confirmation email for booking {booking.ticket_id}: {e}")
 
-# --- Email Notification for Cancellation ---
-def send_cancellation_email(booking):
-    subject = f"Booking Cancelled: Booking ID {booking.ticket_id}"
-    body = (
-        f"Dear {booking.user.username},\n\nYour booking ({booking.ticket_id}) is cancelled. {booking.total_cost} credits were refunded.\n\nThank you."
-    )
-    email = EmailMessage(subject, body, 'your_email@example.com', [booking.user.email])
-    try:
-        email.send(fail_silently=False)
-    except Exception as e:
-        print(f"Failed to send cancellation email for booking {booking.ticket_id}: {e}")
+@login_required
+def confirm_payment_view(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id, user=request.user, status='Pending')
 
-# ---- AUTHENTICATION VIEWS ----
+    if request.method == 'POST':
+        if request.user.credits >= booking.total_cost:
+           
+            request.user.credits -= booking.total_cost
+            request.user.save()
+            booking.bus.available_seats -= booking.num_passengers
+            booking.bus.save()
+            booking.status = 'Booked'
+            booking.save()
+
+            messages.success(request, f"Booking successful! {booking.total_cost} credits deducted.")
+
+            
+            try:
+                passengers = booking.passengers.all()
+                
+                pdf_buffer = generate_ticket_pdf(booking, passengers)
+
+                
+                subject = f"Your Ticket is Confirmed: Booking ID BOOK-{booking.id}"
+                body = (
+                    f"Dear {booking.user.username},\n\n"
+                    f"Your booking for {booking.bus.name} is confirmed. Please find your ticket attached.\n\n"
+                    "Thank you for using our service!"
+                )
+                email = EmailMessage(
+                    subject,
+                    body,
+                    'your_gmail_address@gmail.com', 
+                    [booking.user.email]
+                )
+                
+                
+                email.attach(f'Ticket-BOOK-{booking.id}.pdf', pdf_buffer.getvalue(), 'application/pdf')
+                email.send(fail_silently=False)
+                
+                messages.info(request, 'A confirmation email with your ticket has been sent.')
+            except Exception as e:
+                
+                messages.error(request, f"Booking was successful, but failed to send email: {e}")
+           
+            return redirect('index')
+        else:
+            messages.error(request, "You do not have enough credits.")
+            return redirect('confirm_payment', booking_id=booking.id)
+
+    return render(request, 'payment.html', {'booking': booking})
+
+
+
+
 def register_view(request):
     if request.user.is_authenticated: return redirect('index')
     if request.method == 'POST':

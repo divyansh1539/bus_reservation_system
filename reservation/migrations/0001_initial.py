@@ -7,7 +7,7 @@ import django.contrib.auth.validators
 import django.utils.timezone
 from datetime import timedelta
 
-# UPDATED: अब यह फंक्शन भारतीय शहरों और बस नामों के साथ डेमो बसें बनाएगा
+
 def create_demo_buses(apps, schema_editor):
     Bus = apps.get_model('reservation', 'Bus')
     
@@ -20,12 +20,12 @@ def create_demo_buses(apps, schema_editor):
         'Hyderabad', 'Pune', 'Jaipur', 'Ahmedabad', 'Lucknow'
     ]
 
-    # पुरानी बसों को हटा दें ताकि डुप्लीकेट न बनें
+    
     Bus.objects.all().delete()
 
     for i in range(50):
         source_city = cities[i % len(cities)]
-        # यह सुनिश्चित करने के लिए कि स्रोत और गंतव्य अलग-अलग हों
+        
         destination_city = cities[(i + 3) % len(cities)]
         if source_city == destination_city:
             destination_city = cities[(i + 4) % len(cities)]
@@ -39,7 +39,7 @@ def create_demo_buses(apps, schema_editor):
             departure_time=departure,
             total_seats=40,
             available_seats=30 + (i % 10),
-            ticket_price=350.00 + (i * 15) # भारतीय रुपये के हिसाब से कीमत
+            ticket_price=350.00 + (i * 15)
         )
 
 class Migration(migrations.Migration):
@@ -52,7 +52,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            # ... (CustomUser मॉडल का बाकी हिस्सा वैसा ही रहेगा) ...
+            
             name='CustomUser',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
@@ -73,7 +73,7 @@ class Migration(migrations.Migration):
             options={'verbose_name': 'user', 'verbose_name_plural': 'users', 'abstract': False},
             managers=[('objects', django.contrib.auth.models.UserManager())],
         ),
-        # ... (Bus, Booking, और Passenger मॉडल का बाकी हिस्सा वैसा ही रहेगा) ...
+        
         migrations.CreateModel(
             name='Bus',
             fields=[
@@ -110,6 +110,6 @@ class Migration(migrations.Migration):
                 ('booking', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='passengers', to='reservation.booking')),
             ],
         ),
-        # यह फंक्शन भारतीय नामों वाली बसें बनाएगा
+       
         migrations.RunPython(create_demo_buses),
     ]

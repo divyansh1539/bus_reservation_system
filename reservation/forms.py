@@ -23,13 +23,9 @@ class CustomUserCreationForm(UserCreationForm):
 
 # BusSearchForm को journey_date फील्ड के साथ अपडेट किया गया है
 class BusSearchForm(forms.Form):
+    
     source = forms.CharField(label="From", required=True, widget=forms.TextInput(attrs={'placeholder': 'Enter source city'}))
     destination = forms.CharField(label="To", required=True, widget=forms.TextInput(attrs={'placeholder': 'Enter destination city'}))
-    journey_date = forms.DateField(
-        label="Journey Date",
-        widget=forms.DateInput(attrs={'type': 'date'}),  # यह HTML5 का डेट पिकर बना देगा
-        required=True
-    )
 
 
 class BookingDetailsForm(forms.ModelForm):
