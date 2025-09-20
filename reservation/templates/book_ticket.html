@@ -7,8 +7,8 @@
     .form-card{width:100%; max-width:500px;}
     h1{text-align:center; margin-bottom:24px;}
     form{display:grid; gap:16px;}
-    form p{margin:0;}
-    form label{font-size:14px; display:block; margin-bottom:6px;}
+    form > div { text-align: left; }
+    form label{font-size:14px; display:block; margin-bottom:6px; font-weight: 600;}
     form input{width:100%; padding:12px 14px; border-radius:14px; font-size:15px; border:1px solid rgba(255,255,255,.35); background:rgba(255,255,255,.15); color:#fff; outline:none;}
     .actions{margin-top:20px; display:flex; justify-content:center; gap:16px;}
 </style>
@@ -19,13 +19,24 @@
     <div class="card form-card">
         <h1>Find Your Bus</h1>
         <p style="text-align: center; opacity: .8; margin-bottom: 20px;">
-            Enter your source and destination to find available buses.
+            Enter your source, destination, and date of journey to find buses.
         </p>
 
         <!-- Bus Search Form -->
         <form method="POST">
             {% csrf_token %}
-            {{ search_form.as_p }}
+            <div>
+                <label for="{{ search_form.source.id_for_label }}">Source</label>
+                {{ search_form.source }}
+            </div>
+            <div>
+                <label for="{{ search_form.destination.id_for_label }}">Destination</label>
+                {{ search_form.destination }}
+            </div>
+            <div>
+                <label for="{{ search_form.journey_date.id_for_label }}">Journey Date</label>
+                {{ search_form.journey_date }}
+            </div>
             <button type="submit" class="btn">Find Bus</button>
         </form>
 

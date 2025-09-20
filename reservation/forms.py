@@ -4,8 +4,10 @@ from django.contrib.auth.forms import UserCreationForm
 from django.forms import formset_factory
 from .models import CustomUser, Passenger, Booking
 
+
+
 class CustomUserCreationForm(UserCreationForm):
-    # ... (इसमें कोई बदलाव नहीं)
+   
     email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'placeholder': 'Email address'}))
     class Meta(UserCreationForm.Meta):
         model = CustomUser
@@ -18,12 +20,18 @@ class CustomUserCreationForm(UserCreationForm):
         self.fields['password1'].widget.attrs.update({'placeholder': 'Password'})
         self.fields['password1'].label = "Password"
 
+
+# BusSearchForm को journey_date फील्ड के साथ अपडेट किया गया है
 class BusSearchForm(forms.Form):
-    # ... (इसमें कोई बदलाव नहीं)
     source = forms.CharField(label="From", required=True, widget=forms.TextInput(attrs={'placeholder': 'Enter source city'}))
     destination = forms.CharField(label="To", required=True, widget=forms.TextInput(attrs={'placeholder': 'Enter destination city'}))
+    journey_date = forms.DateField(
+        label="Journey Date",
+        widget=forms.DateInput(attrs={'type': 'date'}),  # यह HTML5 का डेट पिकर बना देगा
+        required=True
+    )
 
-# --- यह नया फॉर्म फ़ोन नंबर के लिए जोड़ा गया है ---
+
 class BookingDetailsForm(forms.ModelForm):
     class Meta:
         model = Booking
@@ -32,13 +40,21 @@ class BookingDetailsForm(forms.ModelForm):
             'phone_number': forms.TextInput(attrs={'placeholder': 'Enter contact number'}),
         }
 
+
 class PassengerForm(forms.ModelForm):
+    # --- यह नया फील्ड सीट चुनने के लिए है ---
+    seat_number = forms.ChoiceField(label="Seat Number")
+
     class Meta:
         model = Passenger
-        fields = ['name', 'age', 'gender']
-        widgets = {
-            'name': forms.TextInput(attrs={'placeholder': 'Full Name'}),
-            'age': forms.NumberInput(attrs={'placeholder': 'Age'}),
-        }
+        fields = ['name', 'age', 'gender', 'seat_number']
+
+    def __init__(self, *args, **kwargs):
+        # सीट के चॉइस को व्यू से डायनामिक रूप से सेट करने के लिए
+        available_seats = kwargs.pop('available_seats', [])
+        super().__init__(*args, **kwargs)
+        if available_seats:
+            self.fields['seat_number'].choices = [(seat, seat) for seat in available_seats]
+
 
 PassengerFormSet = formset_factory(PassengerForm, extra=0, can_delete=False)

@@ -3,15 +3,26 @@
 
 {% block style %}
 <style>
-    .grid-center{display:grid; place-items:center; padding:24px;}
-    .ticket-card{width:100%; max-width:800px; text-align:center;}
-    .ticket-header { border-bottom: 2px dashed var(--card-brd); padding-bottom: 20px; margin-bottom: 20px;}
+    .grid-center { display: grid; place-items: center; padding: 24px; }
+    .ticket-card { width: 100%; max-width: 800px; text-align: center; }
+    .ticket-header { border-bottom: 2px dashed var(--card-brd); padding-bottom: 20px; margin-bottom: 20px; }
     .ticket-body { text-align: left; }
-    .ticket-body h3 { text-align: left; border-bottom: 1px solid var(--card-brd); padding-bottom: 8px; margin-bottom: 16px;}
+    .ticket-body h3 { text-align: left; border-bottom: 1px solid var(--card-brd); padding-bottom: 8px; margin-bottom: 16px; }
     .passenger-list { list-style: none; padding: 0; }
-    .passenger-item { display: grid; grid-template-columns: 1fr 2fr 1fr 1fr; gap: 16px; background: rgba(255,255,255,0.08); padding: 12px; border-radius: 12px; margin-bottom: 10px; align-items: center;}
-    .passenger-item.header { background:none; font-weight:bold; }
-    .actions{margin-top:30px; display:flex; justify-content:center; gap:16px;}
+    
+    /* --- बदलाव यहाँ है: ग्रिड को 5 कॉलम का बनाया गया है --- */
+    .passenger-item { 
+        display: grid; 
+        grid-template-columns: 1.5fr 2fr 1fr 1fr 1fr; /* 5 कॉलम */
+        gap: 16px; 
+        background: rgba(255,255,255,0.08); 
+        padding: 12px; 
+        border-radius: 12px; 
+        margin-bottom: 10px; 
+        align-items: center; 
+    }
+    .passenger-item.header { background: none; font-weight: bold; }
+    .actions { margin-top: 30px; display: flex; justify-content: center; gap: 16px; }
 </style>
 {% endblock %}
 
@@ -21,6 +32,7 @@
         <div class="ticket-header">
             <h1>Virtual Ticket</h1>
             <p><strong>Booking Status:</strong> <span class="pill">{{ booking.status }}</span></p>
+            <p><strong>Booking ID:</strong> {{ booking.ticket_id }}</p>
         </div>
 
         <div class="ticket-body">
@@ -37,13 +49,15 @@
                     <div>Name</div>
                     <div>Age</div>
                     <div>Gender</div>
+                    <div>Seat</div> <!-- /// --- नया कॉलम: सीट --- /// -->
                 </div>
                 {% for passenger in passengers %}
                 <div class="passenger-item">
-                    <div>TICKET-{{ booking.id }}-{{ passenger.id }}</div>
+                    <div>{{ passenger.ticket_id }}</div>
                     <div>{{ passenger.name }}</div>
                     <div>{{ passenger.age }}</div>
                     <div>{{ passenger.gender }}</div>
+                    <div>{{ passenger.seat_number }}</div> <!-- /// --- यहाँ सीट नंबर दिखाया गया है --- /// -->
                 </div>
                 {% empty %}
                 <p>No passenger details found for this booking.</p>
@@ -53,7 +67,6 @@
 
         <div class="actions">
             <a href="{% url 'index' %}" class="btn">Back to Dashboard</a>
-            <!-- NEW Download Button -->
             <a href="{% url 'download_ticket' booking.id %}" class="btn">Download Ticket</a>
             {% if booking.status == 'Booked' %}
             <a class="btn cancel" href="{% url 'cancel_booking' booking.id %}">Cancel Booking</a>

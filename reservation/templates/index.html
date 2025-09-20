@@ -4,37 +4,157 @@
 {% block style %}
 <style>
     /* --- All your existing styles remain unchanged --- */
-    body{display:flex; flex-direction:column; min-height:100vh;}
-    .nav{display:flex; justify-content:space-between; align-items:center; gap:16px; padding:18px 24px;}
-    .brand{display:flex; align-items:center; gap:12px;}
-    .logo{width:38px; height:38px; border-radius:12px; background:conic-gradient(from 180deg, var(--g1), var(--g2), var(--g3), var(--g4), var(--g1));}
-    .nav .links a, .nav .links span{cursor: pointer; color:#fff; text-decoration:none; font-weight:600; padding:10px 14px; border-radius:14px;}
-    .nav .links a { border:1px solid rgba(255,255,255,.25); background:rgba(255,255,255,.12); transition:all .25s;}
-    .nav .links a:hover{background:rgba(255,255,255,.18); border-color:rgba(255,255,255,.35);}
-    .wrap{flex:1; display:grid; gap:24px; grid-template-columns:1fr; padding:0 24px 28px;}
-    @media(min-width:960px){.wrap{grid-template-columns:1.2fr .8fr;}}
-    .footer{padding:20px 24px; text-align:center; opacity:.85;}
-    .text-center{text-align:center;}
+    body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    .nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        padding: 18px 24px;
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .logo {
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        background: conic-gradient(from 180deg, var(--g1), var(--g2), var(--g3), var(--g4), var(--g1));
+    }
+
+    .nav .links a,
+    .nav .links span {
+        cursor: pointer;
+        color: #fff;
+        text-decoration: none;
+        font-weight: 600;
+        padding: 10px 14px;
+        border-radius: 14px;
+    }
+
+    .nav .links a {
+        border: 1px solid rgba(255, 255, 255, .25);
+        background: rgba(255, 255, 255, .12);
+        transition: all .25s;
+    }
+
+    .nav .links a:hover {
+        background: rgba(255, 255, 255, .18);
+        border-color: rgba(255, 255, 255, .35);
+    }
+
+    .wrap {
+        flex: 1;
+        display: grid;
+        gap: 24px;
+        grid-template-columns: 1fr;
+        padding: 0 24px 28px;
+    }
+
+    @media(min-width:960px) {
+        .wrap {
+            grid-template-columns: 1.2fr .8fr;
+        }
+    }
+
+    .footer {
+        padding: 20px 24px;
+        text-align: center;
+        opacity: .85;
+    }
+
+    .text-center {
+        text-align: center;
+    }
 
     /* Bus List Styles */
-    .bus-list-header, .bus-item { display: grid; grid-template-columns: 1fr 1fr 1fr 0.5fr 0.5fr; gap: 16px; align-items: center; padding: 12px 16px; }
-    .bus-list-header { font-size: 14px; opacity: .9; font-weight: 600; }
-    .bus-item { background: rgba(255,255,255,.08); border: 1px solid var(--table-brd); border-radius: 14px; margin-bottom: 10px; }
-    .bus-item:hover { background: rgba(255,255,255,.12); }
-    .pill { display: inline-block; padding: 7px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.25); text-align: center; }
+    .bus-list-header,
+    .bus-item {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 0.5fr 0.5fr;
+        gap: 16px;
+        align-items: center;
+        padding: 12px 16px;
+    }
+
+    .bus-list-header {
+        font-size: 14px;
+        opacity: .9;
+        font-weight: 600;
+    }
+
+    .bus-item {
+        background: rgba(255, 255, 255, .08);
+        border: 1px solid var(--table-brd);
+        border-radius: 14px;
+        margin-bottom: 10px;
+    }
+
+    .bus-item:hover {
+        background: rgba(255, 255, 255, .12);
+    }
+
+    .pill {
+        display: inline-block;
+        padding: 7px 12px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        background: rgba(255, 255, 255, .15);
+        border: 1px solid rgba(255, 255, 255, .25);
+        text-align: center;
+    }
 
     /* Bookings Table Styles */
-    .bookings-table table{width:100%; border-collapse:separate; border-spacing:0 10px; margin-top:-10px;}
-    .bookings-table th, .bookings-table td{text-align:left; padding:12px 16px; vertical-align:middle;}
-    .bookings-table th{font-size:14px; opacity:.9;}
-    .bookings-table tbody tr{background:rgba(255,255,255,.08); border:1px solid var(--table-brd); border-radius:14px;}
-    .bookings-table .btn.cancel { background: #dc3545; }
+    .bookings-table table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px;
+        margin-top: -10px;
+    }
+
+    .bookings-table th,
+    .bookings-table td {
+        text-align: left;
+        padding: 12px 16px;
+        vertical-align: middle;
+    }
+
+    .bookings-table th {
+        font-size: 14px;
+        opacity: .9;
+    }
+
+    .bookings-table tbody tr {
+        background: rgba(255, 255, 255, .08);
+        border: 1px solid var(--table-brd);
+        border-radius: 14px;
+    }
+
+    .bookings-table .btn.cancel {
+        background: #dc3545;
+    }
 
 
 
-    .btn.cancel { background-color: #dc3545; }
-    .btn.cancel:hover { background-color: #b02a37; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transform: scale(1.05); }
+    .btn.cancel {
+        background-color: #dc3545;
+    }
 
+    .btn.cancel:hover {
+        background-color: #b02a37;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        transform: scale(1.05);
+    }
 </style>
 {% endblock %}
 
@@ -72,7 +192,8 @@
                 <div>{{ bus.source }} → {{ bus.destination }}</div>
                 <div>{{ bus.departure_time|date:"M d, Y H:i" }}</div>
                 <div><span class="pill">{{ bus.available_seats }}</span></div>
-                <div><a class="btn" href="{% url 'book_bus' bus.id %}">Book</a></div>
+                <a class="btn" href="{% url 'book_bus' bus.id %}?date={{ bus.departure_time|date:'Y-m-d' }}">Book</a>
+
             </div>
             {% empty %}
             <p class="text-center">No buses available at the moment.</p>
@@ -99,6 +220,7 @@
                 <tr>
                     <td>{{ booking.bus.name }}</td>
                     <td>{{ booking.bus.source }} → {{ booking.bus.destination }}</td>
+
                     <td><span class="pill">{{ booking.num_passengers }}</span></td>
                     <td><span class="pill">{{ booking.status }}</span></td>
                     <td><a class="btn" href="{% url 'booking_detail' booking.id %}">View</a></td>
@@ -109,7 +231,10 @@
                     </td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="6" class="text-center">You have no bookings yet.</td></tr>
+                <tr>
+                    <!-- colspan को 7 कर दिया गया है -->
+                    <td colspan="7" class="text-center">You have no bookings yet.</td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>

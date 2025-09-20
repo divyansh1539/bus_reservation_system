@@ -21,28 +21,31 @@
 {% block content %}
 <div class="grid-center">
     <div class="card list-card">
-        <h1>Select a Bus to Book</h1>
+        <!-- हेडिंग को यात्रा की तारीख के साथ अपडेट किया गया है -->
+        <h1>Available Buses for {{ journey_date|date:"F d, Y" }}</h1>
+        
         <table>
             <thead>
-                <tr><th>Bus</th><th>Route</th><th>Departure</th><th>Seats</th><th></th></tr>
+                <tr><th>Bus</th><th>Route</th><th>Departure Time</th><th>Seats</th><th></th></tr>
             </thead>
             <tbody>
             {% for bus in buses %}
                 <tr>
                     <td>{{ bus.name }}</td>
                     <td>{{ bus.source }} → {{ bus.destination }}</td>
-                    <td>{{ bus.departure_time|date:"M d, Y H:i" }}</td>
+                    <!-- अब सिर्फ निकलने का समय दिखेगा, तारीख नहीं -->
+                    <td>{{ bus.departure_time|time:"H:i" }}</td>
                     <td><span class="pill">{{ bus.available_seats }}</span></td>
-                    <!-- This button takes the user to payment -->
-                    <td><a class="btn" href="{% url 'book_bus' bus.id %}">Book</a></td>
+                    <!-- "Book" बटन के लिंक में यात्रा की तारीख को जोड़ा गया है -->
+                    <td><a class="btn" href="{% url 'book_bus' bus.id %}?date={{ journey_date|date:'Y-m-d' }}">Book</a></td>
                 </tr>
             {% empty %}
-                <tr><td colspan="5" style="text-align:center; padding: 20px;">Sorry, no buses were found for this route.</td></tr>
+                <tr><td colspan="5" style="text-align:center; padding: 20px;">Sorry, no buses were found for this route on the selected date.</td></tr>
             {% endfor %}
             </tbody>
         </table>
         <div class="actions">
-             <!-- Link to go back to the search page -->
+            <!-- वापस सर्च पेज पर जाने का लिंक -->
             <a href="{% url 'book_ticket' %}" class="btn">Search Again</a>
         </div>
     </div>
