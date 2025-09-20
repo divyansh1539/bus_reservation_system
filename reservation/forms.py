@@ -1,17 +1,17 @@
 # reservation/forms.py
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import formset_factory
 from .models import CustomUser, Passenger, Booking
 
-
-
 class CustomUserCreationForm(UserCreationForm):
-   
     email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'placeholder': 'Email address'}))
+    
     class Meta(UserCreationForm.Meta):
         model = CustomUser
         fields = ('username', 'email')
+        
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if 'password2' in self.fields: del self.fields['password2']
@@ -20,13 +20,16 @@ class CustomUserCreationForm(UserCreationForm):
         self.fields['password1'].widget.attrs.update({'placeholder': 'Password'})
         self.fields['password1'].label = "Password"
 
-
-# BusSearchForm को journey_date फील्ड के साथ अपडेट किया गया है
+# --- बदलाव यहाँ है: BusSearchForm में journey_date फील्ड वापस जोड़ा गया है ---
 class BusSearchForm(forms.Form):
-    
     source = forms.CharField(label="From", required=True, widget=forms.TextInput(attrs={'placeholder': 'Enter source city'}))
     destination = forms.CharField(label="To", required=True, widget=forms.TextInput(attrs={'placeholder': 'Enter destination city'}))
-
+    # --- यह फील्ड डेट पिकर बनाएगा ---
+    journey_date = forms.DateField(
+        label="Journey Date",
+        widget=forms.DateInput(attrs={'type': 'date'}),
+        required=True
+    )
 
 class BookingDetailsForm(forms.ModelForm):
     class Meta:
@@ -36,9 +39,8 @@ class BookingDetailsForm(forms.ModelForm):
             'phone_number': forms.TextInput(attrs={'placeholder': 'Enter contact number'}),
         }
 
-
 class PassengerForm(forms.ModelForm):
-    # --- यह नया फील्ड सीट चुनने के लिए है ---
+    # यह फील्ड सीट चुनने के लिए है
     seat_number = forms.ChoiceField(label="Seat Number")
 
     class Meta:
@@ -51,6 +53,5 @@ class PassengerForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if available_seats:
             self.fields['seat_number'].choices = [(seat, seat) for seat in available_seats]
-
 
 PassengerFormSet = formset_factory(PassengerForm, extra=0, can_delete=False)
